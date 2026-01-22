@@ -1,25 +1,12 @@
-Data model:
+Compose:
 
-Task - Class with attributes:
+- With Compose, whenever the UI state changes, Compose recomposes automatically. 
 
-- id: int
-- title: string
-- description: string
-- priority: int
-- doeDate: string
-- done: boolean
+ViewModel:
 
-
-Functions:
-
-- addTask(list, task) - returns a new list with a new task added.
-- toggleDone(list, id) - returns a new list with the done status of the task with the given id toggled.
-- filterByDone(tasks, showDone) - filters the list depending on status of showDone.
-    If showDone is null, returns original list, if true returns only done tasks, if false returns undone tasks.
-- dateKey(dueDate) - helper function that changes string date to numbers so it can be sorted.
-- sortByDueDate(tasks, ascending) - sorts tasks by dateKey. Order is reversed if ascending is false.
+- ViewModel is better than remember, because it lasts through process changes and Composes, unlike remember.
 
 
 Showcase:
 
-https://www.youtube.com/watch?v=jBWmuzu_au0
+https://youtu.be/paSYZ0gioYY
