@@ -1,33 +1,64 @@
 package com.example.viikko1.domain
 
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
 class TaskViewModel : ViewModel() {
-    val tasks: MutableState<List<Task>> = mutableStateOf(emptyList())
+    var tasks by mutableStateOf(listOf<Task>())
+        private set
+
+    private var allTasks: List<Task> = listOf()
+    private var filterDone: Boolean? = null
+    private var ascending: Boolean = true
 
     init {
-        tasks.value = mockTasks
+        allTasks = mockTasks
+        applyFilters()
     }
 
     fun addTask(task: Task) {
-        tasks.value = addTask(tasks.value, task)
+        allTasks = allTasks + task
+        applyFilters()
     }
 
     fun toggleDone(id: Int) {
-        tasks.value = toggleDone(tasks.value, id)
+        allTasks = allTasks.map { if (it.id == id) it.copy(done = !it.done) else it }
+        applyFilters()
     }
 
     fun removeTask(id: Int) {
-        tasks.value = tasks.value.filter { it.id != id }
+        allTasks = allTasks.filterNot { it.id == id }
+        applyFilters()
     }
 
-    fun filterByDone(showDone: Boolean?) {
-        tasks.value = filterByDone(tasks.value, showDone)
+    fun filterByDone(done: Boolean?) {
+        filterDone = done
+        applyFilters()
     }
 
-    fun sortByDueDate(ascending: Boolean = true) {
-        tasks.value = sortByDueDate(tasks.value, ascending)
+    fun sortByDueDate() {
+        ascending = !ascending
+        applyFilters()
+    }
+
+    fun setSortAscending(asc: Boolean) {
+        if (ascending != asc) {
+            ascending = asc
+            applyFilters()
+        }
+    }
+
+    private fun applyFilters() {
+        var result = allTasks
+
+        filterDone?.let { showDone ->
+            result = if (showDone) result.filter { it.done } else result.filter { !it.done }
+        }
+
+        result = sortByDueDate(result, ascending)
+
+        tasks = result
     }
 }
